@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
+                                                Login(email,password);
                                                 Toast.makeText(getApplicationContext(),"Successfully Register on Firebase",Toast.LENGTH_LONG).show();
                                                 savedUsers(email);
                                             }
