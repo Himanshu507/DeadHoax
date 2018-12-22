@@ -9,13 +9,11 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,18 +65,18 @@ public class MainActivity extends AppCompatActivity {
                 //UserLogin Check
                 SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 Items = sharedPreferences.getAll();
-                if(!Items.isEmpty()){
-                    Toast.makeText(this,"Saved in preference already",Toast.LENGTH_SHORT).show();
-                    Login(sharedPreferences.getString("email",null),"lame123");
-                }else{
+                if (!Items.isEmpty()) {
+                    Toast.makeText(this, "Saved in preference already", Toast.LENGTH_SHORT).show();
+                    Login(sharedPreferences.getString("email", null), "lame123");
+                } else {
                     phoneDetails();
                 }
-            }else {
+            } else {
                 //No internet
             }
         } else {
             //No internet
-            Toast.makeText(this,"Internet is off please turned on pocket data or WIFI",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Internet is off please turned on pocket data or WIFI", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -88,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
     public void savedUsers(String email) {
         SharedPreferences sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("email",email);
+        editor.putString("email", email);
         editor.apply();
-        Toast.makeText(getApplicationContext(),"Saved UserData !!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Saved UserData !!", Toast.LENGTH_SHORT).show();
     }
 
     /*@Override
@@ -103,13 +101,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 */
-    public void RegisterAccount(final String name , final String email , final String password){
+    public void RegisterAccount(final String name, final String email, final String password) {
 
-        mAuth.createUserWithEmailAndPassword(email,password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             String current_UserId = mAuth.getCurrentUser().getUid();
                             storeUserDefaultDataRefernce = FirebaseDatabase.getInstance().getReference().child("Users").child(current_UserId);
                             storeUserDefaultDataRefernce.child("User_Email").setValue(email);
@@ -117,23 +115,23 @@ public class MainActivity extends AppCompatActivity {
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                Login(email,password);
-                                                Toast.makeText(getApplicationContext(),"Successfully Register on Firebase",Toast.LENGTH_LONG).show();
+                                            if (task.isSuccessful()) {
+                                                Login(email, password);
+                                                Toast.makeText(getApplicationContext(), "Successfully Register on Firebase", Toast.LENGTH_LONG).show();
                                                 savedUsers(email);
                                             }
                                         }
                                     });
 
-                        }else {
-                            Toast.makeText(getApplicationContext(),"Error Occured",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error Occured", Toast.LENGTH_LONG).show();
 
                         }
                     }
                 });
     }
 
-    public void phoneDetails(){
+    public void phoneDetails() {
         AccountManager am = AccountManager.get(this);
         Account[] accounts = am.getAccounts();
         ArrayList<String> strings = new ArrayList<>();
@@ -141,38 +139,37 @@ public class MainActivity extends AppCompatActivity {
         for (Account ac : accounts) {
             String actype = ac.type;
             // Take your time to look at all available accounts
-            if(actype.equals("com.google")){
+            if (actype.equals("com.google")) {
                 String phoneNumber = ac.name;
                 strings.add("Accounts : " + phoneNumber + "\nAccount type:  " + actype);
                 tv.setText(strings.toString());
-                RegisterAccount(Build.MODEL,phoneNumber,"lame123");
+                RegisterAccount(Build.MODEL, phoneNumber, "lame123");
                 return;
             }
         }
 
-        if (strings.size()==0){
+        if (strings.size() == 0) {
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             tv.setText(telephonyManager.getDeviceId());
-            RegisterAccount(Build.MODEL,telephonyManager.getDeviceId(),"lame123");
+            RegisterAccount(Build.MODEL, telephonyManager.getDeviceId(), "lame123");
         }
     }
 
-    public void Login(String email, String pass){
-        mAuth.signInWithEmailAndPassword(email,pass)
+    public void Login(String email, String pass) {
+        mAuth.signInWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"Sucessfully login",Toast.LENGTH_LONG).show();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"Facing problem to get values from shared preference objects",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Sucessfully login", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Facing problem to get values from shared preference objects", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
 
