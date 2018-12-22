@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             String current_UserId = mAuth.getCurrentUser().getUid();
                             storeUserDefaultDataRefernce = FirebaseDatabase.getInstance().getReference().child("Users").child(current_UserId);
-                            storeUserDefaultDataRefernce.child("User_Email").setValue(email);
-                            storeUserDefaultDataRefernce.child("User_Name").setValue(name)
+                            storeUserDefaultDataRefernce.child("user_email").setValue(email);
+                            storeUserDefaultDataRefernce.child("user_name").setValue(name)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
